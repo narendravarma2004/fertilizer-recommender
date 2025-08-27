@@ -4,20 +4,25 @@ import joblib
 import numpy as np
 import json
 
-# Load trained model and encoders
+# ✅ Load trained model and encoders once at startup
 model = tf.keras.models.load_model("fertilizer_model.h5")
 label_encoders = joblib.load("label_encoders.pkl")
 fertilizer_encoder = joblib.load("fertilizer_encoder.pkl")
 
-# Load dropdown options
+# ✅ Load dropdown options once
 with open("options.json", "r") as f:
     options = json.load(f)
 
+# Flask app
 app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return render_template("index.html", soil_types=options["soil_types"], crop_types=options["crop_types"])
+    return render_template(
+        "index.html",
+        soil_types=options["soil_types"],
+        crop_types=options["crop_types"]
+    )
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -35,7 +40,7 @@ def predict():
         soil_encoded = label_encoders["Soil Type"].transform([soil_type])[0]
         crop_encoded = label_encoders["Crop Type"].transform([crop_type])[0]
 
-        # Prepare input
+        # Prepare input for model
         input_data = np.array([[temperature, moisture, soil_encoded, crop_encoded,
                                 nitrogen, potassium, phosphorous]])
 
@@ -44,16 +49,19 @@ def predict():
         predicted_class = np.argmax(prediction, axis=1)[0]
         fertilizer_name = fertilizer_encoder.inverse_transform([predicted_class])[0]
 
-        return render_template("index.html", 
-                               soil_types=options["soil_types"], 
-                               crop_types=options["crop_types"],
-                               result=f"🌱 Recommended Fertilizer: {fertilizer_name}")
+        return render_template(
+            "index.html",
+            soil_types=options["soil_types"],
+            crop_types=options["crop_types"],
+            result=f"🌱 Recommended Fertilizer: {fertilizer_name}"
+        )
 
     except Exception as e:
-        return render_template("index.html", 
-                               soil_types=options["soil_types"], 
-                               crop_types=options["crop_types"],
-                               result=f"❌ Error: {str(e)}")
+        return render_template(
+            "index.html",
+            soil_types=options["soil_types"],
+            crop_types=options["crop_types"],
+            result=f"❌ Error: {str(e)}"
+        )
 
-if __name__ == "__main__":
-    app.run(debug=True)
+# ❌ REMOVE app.run(debug=True) → Gunicorn will run this app on Render
