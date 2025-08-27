@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fertilizer Recommendation</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .container { width: 400px; margin: auto; padding: 20px; border-radius: 10px; background: #f2f2f2; }
+        input, select { width: 100%; padding: 10px; margin: 8px 0; }
+        button { background: green; color: white; padding: 10px; border: none; width: 100%; }
+        .result { margin-top: 20px; font-weight: bold; color: blue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Fertilizer Recommendation System</h2>
+        <form method="POST" action="/predict">
+            <input type="number" step="0.1" name="temperature" placeholder="Temperature" required>
+            <input type="number" step="0.1" name="moisture" placeholder="Moisture" required>
+
+            <select name="soil_type" required>
+                <option value="" disabled selected>Select Soil Type</option>
+                <option value="Sandy">Sandy</option>
+                <option value="Loamy">Loamy</option>
+                <option value="Clay">Clay</option>
+            </select>
+
+            <select name="crop_type" required>
+                <option value="" disabled selected>Select Crop Type</option>
+                <option value="Wheat">Wheat</option>
+                <option value="Rice">Rice</option>
+                <option value="Maize">Maize</option>
+            </select>
+
+            <input type="number" step="0.1" name="nitrogen" placeholder="Nitrogen" required>
+            <input type="number" step="0.1" name="potassium" placeholder="Potassium" required>
+            <input type="number" step="0.1" name="phosphorous" placeholder="Phosphorous" required>
+
+            <button type="submit">Predict Fertilizer</button>
+        </form>
+
+        {% if result %}
+            <div class="result">{{ result }}</div>
+        {% endif %}
+    </div>
+</body>
+</html>
