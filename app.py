@@ -1,21 +1,36 @@
+import os
 from flask import Flask, render_template, request
 import tensorflow as tf
 import joblib
 import numpy as np
 import json
 
-# ✅ Load trained model and encoders once at startup
+# -------------------------------
+# Suppress TensorFlow warnings
+# -------------------------------
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'  # 0=all, 1=INFO, 2=WARNING, 3=ERROR
+
+# -------------------------------
+# Load trained model and encoders
+# -------------------------------
 model = tf.keras.models.load_model("fertilizer_model.h5")
 label_encoders = joblib.load("label_encoders.pkl")
 fertilizer_encoder = joblib.load("fertilizer_encoder.pkl")
 
-# ✅ Load dropdown options once
+# -------------------------------
+# Load dropdown options
+# -------------------------------
 with open("options.json", "r") as f:
     options = json.load(f)
 
-# Flask app
+# -------------------------------
+# Initialize Flask app
+# -------------------------------
 app = Flask(__name__)
 
+# -------------------------------
+# Routes
+# -------------------------------
 @app.route("/")
 def home():
     return render_template(
@@ -64,4 +79,9 @@ def predict():
             result=f"❌ Error: {str(e)}"
         )
 
-# ❌ REMOVE app.run(debug=True) → Gunicorn will run this app on Render
+# -------------------------------
+# Run locally only
+# Render will use Gunicorn
+# -------------------------------
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)
