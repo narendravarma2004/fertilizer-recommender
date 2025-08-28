@@ -2,112 +2,195 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Fertilizer Recommendation</title>
+  <title>Fertilizer Recommendation System</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
       background: linear-gradient(to right, #a8e063, #56ab2f);
       font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .card {
+    .navbar-brand span {
+      font-size: 1.5rem;
+    }
+    .main-card, .contact-card {
       border-radius: 15px;
-      box-shadow: 0px 6px 12px rgba(0,0,0,0.15);
+      box-shadow: 0px 6px 24px rgba(0,0,0,0.10);
+      margin-bottom: 24px;
+      background: #fff;
     }
     .btn-custom {
       background-color: #28a745;
       color: white;
       font-weight: bold;
+      transition: background 0.25s;
     }
     .btn-custom:hover {
       background-color: #218838;
+      color: white;
     }
     .result-box {
-      margin-top: 20px;
-      padding: 15px;
       border-radius: 10px;
       font-weight: bold;
       text-align: center;
-    }
-    .result-success {
       background: #e9fbe9;
       color: #155724;
       border: 1px solid #c3e6cb;
+      margin-top: 25px;
+      padding: 15px;
+    }
+    footer {
+      background: #28a745;
+      color: #fff;
+      padding: 12px 0 5px 0;
+      margin-top: auto;
+      text-align: center;
+      font-size: 15px;
+      letter-spacing: 0.5px;
+    }
+    .navbar .nav-link.active {
+      font-weight: bold;
+      border-bottom: 2px solid #fff;
     }
   </style>
 </head>
 <body>
-  <div class="container mt-5">
+  <!-- Navigation Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
+    <div class="container">
+      <a class="navbar-brand" href="#"><span>🌱</span> Fertilizer Recommender</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" href="#main-form">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#contact-section">Contact</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://narendravarma2004.netlify.app/" target="_blank">My Portfolio</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Fertilizer Recommendation Form -->
+  <div class="container mt-5" id="main-form">
     <div class="row justify-content-center">
-      <div class="col-lg-6 col-md-8">
-        <div class="card p-4">
-          <h3 class="text-center text-success mb-4">🌱 Fertilizer Recommendation System</h3>
+      <div class="col-lg-7 col-md-10">
+        <div class="main-card p-4">
+          <h3 class="text-center text-success mb-4">🌾 Fertilizer Recommendation System</h3>
           <form method="POST" action="/predict">
-            <!-- Temperature -->
-            <div class="mb-3">
-              <label class="form-label">🌡 Temperature (°C)</label>
-              <input type="number" step="0.1" name="temperature" class="form-control" placeholder="Enter Temperature" required>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">🌡 Temperature (°C)</label>
+                <input type="number" step="0.1" name="temperature" class="form-control" placeholder="Enter Temperature" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">💧 Moisture (%)</label>
+                <input type="number" step="0.1" name="moisture" class="form-control" placeholder="Enter Moisture" required>
+              </div>
             </div>
-
-            <!-- Moisture -->
-            <div class="mb-3">
-              <label class="form-label">💧 Moisture (%)</label>
-              <input type="number" step="0.1" name="moisture" class="form-control" placeholder="Enter Moisture" required>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">🪴 Soil Type</label>
+                <select name="soil_type" class="form-select" required>
+                  <option value="" disabled selected>Select Soil Type</option>
+                  {% for soil in soil_types %}
+                    <option value="{{ soil }}">{{ soil }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">🌾 Crop Type</label>
+                <select name="crop_type" class="form-select" required>
+                  <option value="" disabled selected>Select Crop Type</option>
+                  {% for crop in crop_types %}
+                    <option value="{{ crop }}">{{ crop }}</option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
-
-            <!-- Soil Type -->
-            <div class="mb-3">
-              <label class="form-label">🪴 Soil Type</label>
-              <select name="soil_type" class="form-select" required>
-                <option value="" disabled selected>Select Soil Type</option>
-                {% for soil in soil_types %}
-                  <option value="{{ soil }}">{{ soil }}</option>
-                {% endfor %}
-              </select>
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label class="form-label">🧪 Nitrogen (N)</label>
+                <input type="number" step="0.1" name="nitrogen" class="form-control" placeholder="Enter Nitrogen" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">🧪 Phosphorus (P)</label>
+                <input type="number" step="0.1" name="phosphorous" class="form-control" placeholder="Enter Phosphorous" required>
+              </div>
+              <div class="col-md-4 mb-3">
+                <label class="form-label">🧪 Potassium (K)</label>
+                <input type="number" step="0.1" name="potassium" class="form-control" placeholder="Enter Potassium" required>
+              </div>
             </div>
-
-            <!-- Crop Type -->
-            <div class="mb-3">
-              <label class="form-label">🌾 Crop Type</label>
-              <select name="crop_type" class="form-select" required>
-                <option value="" disabled selected>Select Crop Type</option>
-                {% for crop in crop_types %}
-                  <option value="{{ crop }}">{{ crop }}</option>
-                {% endfor %}
-              </select>
-            </div>
-
-            <!-- Nutrients -->
-            <div class="mb-3">
-              <label class="form-label">🧪 Nitrogen (N)</label>
-              <input type="number" step="0.1" name="nitrogen" class="form-control" placeholder="Enter Nitrogen Value" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">🧪 Phosphorous (P)</label>
-              <input type="number" step="0.1" name="phosphorous" class="form-control" placeholder="Enter Phosphorous Value" required>
-            </div>
-            <div class="mb-3">
-              <label class="form-label">🧪 Potassium (K)</label>
-              <input type="number" step="0.1" name="potassium" class="form-control" placeholder="Enter Potassium Value" required>
-            </div>
-
-            <!-- Submit -->
-            <div class="d-grid">
-              <button type="submit" class="btn btn-custom">🚀 Predict Fertilizer</button>
+            <div class="d-grid gap-2 mt-3">
+              <button type="submit" class="btn btn-custom btn-lg shadow-sm">🚀 Predict Fertilizer</button>
             </div>
           </form>
 
-          <!-- Result -->
+          <!-- Result Section -->
           {% if result %}
-            <div class="result-box result-success mt-4">
-              🌿 Recommended Fertilizer: <span>{{ result }}</span>
+            <div class="result-box">
+              🌿 <strong>Recommended Fertilizer:</strong>
+              <span>{{ result }}</span>
             </div>
           {% endif %}
         </div>
       </div>
     </div>
   </div>
+
+<!-- Contact Section -->
+<div class="container" id="contact-section">
+  <div class="row justify-content-center">
+    <div class="col-lg-7 col-md-10">
+      <div class="contact-card p-4">
+        <h4 class="text-success mb-3 text-center">Contact Us</h4>
+        <form action="https://api.web3forms.com/submit" method="POST" id="contact-form">
+          <!-- Your Web3Forms access key here -->
+          <input type="hidden" name="access_key" value="0919e3ec-b2e7-44a9-9c7c-598826484885" />
+          
+          <div class="mb-3">
+            <label class="form-label">Your Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Your Email</label>
+            <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Message</label>
+            <textarea name="message" class="form-control" rows="3" placeholder="Your message..." required></textarea>
+          </div>
+
+          <!-- Honeypot field to prevent spam -->
+          <input type="checkbox" name="botcheck" style="display:none;">
+
+          <div class="d-grid">
+            <button type="submit" class="btn btn-custom">Send Message</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Footer -->
+  <footer>
+    © 2025 Fertilizer Recommendation System &nbsp;|&nbsp; Made with <span style="color:#ee5253;">♥</span> for Modern Farming
+  </footer>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
