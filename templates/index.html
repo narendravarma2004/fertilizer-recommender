@@ -199,16 +199,21 @@
 
   <!-- Custom Validation Script -->
   <script>
-    document.getElementById("fertilizer-form").addEventListener("submit", function(e) {
-      let inputs = document.querySelectorAll("input[type=number]");
-      for (let input of inputs) {
-        if (input.value < input.min || input.value > input.max) {
-          alert(`${input.name} must be between ${input.min} and ${input.max}`);
-          e.preventDefault();
-          return;
-        }
+  document.getElementById("fertilizer-form").addEventListener("submit", function(e) {
+    let inputs = document.querySelectorAll("input[type=number]");
+    for (let input of inputs) {
+      let value = parseFloat(input.value);
+      let min = parseFloat(input.min);
+      let max = parseFloat(input.max);
+
+      if (isNaN(value) || value < min || value > max) {
+        alert(`${input.name} must be between ${min} and ${max}`);
+        e.preventDefault();
+        return;
       }
-    });
-  </script>
+    }
+  });
+</script>
+
 </body>
 </html>
